@@ -1,8 +1,6 @@
 let http = require('http');
+let express = require('./config/express');
 
-http.createServer((req, res) => {
-    res.end('Hello')
-    console.log('criado');
-}).listen(3000, function(req, res) {
+http.createServer(express).listen(3000, function(req, res) {
     console.log('ouvindo');
 });
