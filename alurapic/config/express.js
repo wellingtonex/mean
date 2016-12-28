@@ -1,15 +1,12 @@
 let express = require('express');
 let app = express();
+let consign = require('consign');
 
-app.use(express.static('./public'))
+app.use(express.static('./public'));
 
-app.get('/v1/fotos', (req, res) => {
-    var fotos = [
-        {_id: 1, titulo: 'Leão', url:'http://www.fundosanimais.com/Minis/leoes.jpg' },
-        {_id: 2, titulo: 'Leão 2', url:'http://www.fundosanimais.com/Minis/leoes.jpg' }
-    ];
-
-    res.json(fotos);
-})
+consign({cwd: 'app'})
+    .include('api')
+    .then('routes')
+    .into(app);
 
 module.exports = app;
