@@ -10,10 +10,14 @@ api.lista = (req, res) => {
 }
 
 api.buscaPorId = (req, res) => {
-
     let foto = fotos.find(foto => foto._id == req.params.id);
-
     res.json(foto);
+}
+
+api.removePorId = (req, res) => {
+    fotos = fotos.filter(foto => foto._id != req.params.id);
+    res.sendStatus(204);
+    //que é igual a res.status(204).end();
 }
 
 module.exports = api;
