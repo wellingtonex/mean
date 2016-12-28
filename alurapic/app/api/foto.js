@@ -28,4 +28,14 @@ api.adiciona = (req, res) => {
     res.end();
 }
 
+api.atuliza = (req, res) => {
+    let foto = req.body;
+    let fotoId = req.params.id;
+
+    let indice = fotos.findIndex(foto => foto._id == fotoId);
+    fotos[indice] = foto;
+    res.sendStatus(200);
+
+}
+
 module.exports = api;
