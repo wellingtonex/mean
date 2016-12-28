@@ -1,4 +1,5 @@
 let api = {};
+let contador = 2;
 
 let fotos = [
             {_id: 1, titulo: 'Leão', url:'http://www.fundosanimais.com/Minis/leoes.jpg' },
@@ -18,6 +19,13 @@ api.removePorId = (req, res) => {
     fotos = fotos.filter(foto => foto._id != req.params.id);
     res.sendStatus(204);
     //que é igual a res.status(204).end();
+}
+
+api.adiciona = (req, res) => {
+    let foto = req.body;
+    foto._id = ++contador;
+    fotos.push(foto);
+    res.end();
 }
 
 module.exports = api;
