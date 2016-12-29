@@ -1,41 +1,70 @@
-let api = {};
-let contador = 2;
+let mongoose = require('mongoose');
 
-let fotos = [
-            {_id: 1, titulo: 'Leão', url:'http://www.fundosanimais.com/Minis/leoes.jpg' },
-            {_id: 2, titulo: 'Leão 2', url:'http://www.fundosanimais.com/Minis/leoes.jpg' }
-        ];
+let api = {};
+
+let model = mongoose.model('Foto');
 
 api.lista = (req, res) => {    
-    res.json(fotos);
+    // model.find((error, fotos) => {
+    //     if(error) {
+    //         res.status(500).json(error);
+    //     }else {
+    //         res.status(200).json(fotos);
+    //     }
+    // });
+
+    model.find({})
+        .then(fotos => {
+            res.json(fotos);
+        }, error => {
+            console.log(error);
+            res.status(500).json(error);
+        });
 }
 
 api.buscaPorId = (req, res) => {
-    let foto = fotos.find(foto => foto._id == req.params.id);
-    res.json(foto);
+    model.findById(req.params.id)
+        .then(foto => {
+            if(!foto) {
+                throw Error('Foto não encontrada.');
+            }else {
+                res.json(foto);
+            }
+        }, error => {
+            console.log(error);
+            res.status(500).json(error);
+        })
 }
 
 api.removePorId = (req, res) => {
-    fotos = fotos.filter(foto => foto._id != req.params.id);
-    res.sendStatus(204);
-    //que é igual a res.status(204).end();
+    model.remove({_id:req.params.id})
+        .then(() => {
+            res.sendStatus(204);
+        }, error => {
+            console.log(error);
+            res.status(500).json(error);
+        })
 }
 
 api.adiciona = (req, res) => {
     let foto = req.body;
-    foto._id = ++contador;
-    fotos.push(foto);
-    res.end();
+    model.create(foto)
+        .then(foto => {
+            res.status(201).json(foto);
+        }, error => {
+            console.log(error);
+            res.status(500).json(error);
+        })
 }
 
 api.atuliza = (req, res) => {
-    let foto = req.body;
-    let fotoId = req.params.id;
-
-    let indice = fotos.findIndex(foto => foto._id == fotoId);
-    fotos[indice] = foto;
-    res.sendStatus(200);
-
+    model.findByIdAndUpdate(req.params.id, req.body)
+        .then(foto => {
+            res.json(foto);
+        }, error => {
+            console.log(error);
+            res.status(500).json(error);
+        })
 }
 
 module.exports = api;
